@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -5,6 +6,8 @@ function FileUpload() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fileName, setFileName] = useState(null);
+  const [cid, setCid] = useState("");
+  const [transaction, setTransaction] = useState("");
 
   const handleOnchange = (e) => {
     const data = e.target.files[0];
@@ -34,8 +37,10 @@ function FileUpload() {
         })
           .then((response) => response.json())
           .then((data) => {
-            console.log(data.transactionHash);
+            setCid(data.cid);
+            setTransaction(data.transactionHash);
             console.log(data.cid);
+            console.log(data.transactionHash);
           })
           .catch((err) => {
             console.error(err);
@@ -55,6 +60,10 @@ function FileUpload() {
         err.response ? err.response.data : err.message
       );
     }
+  };
+
+  const myLoader = ({ src }) => {
+    return `https://${src}.ipfs.dweb.link`;
   };
 
   return (
@@ -133,7 +142,7 @@ function FileUpload() {
                 type="submit"
                 className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               >
-                Upload File
+                Mint File
               </button>
             ) : (
               ""
@@ -141,6 +150,45 @@ function FileUpload() {
           </div>
         </form>
       )}
+      <div className="flex items-center justify-center">
+        {cid && (
+          <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <a target="_blank" href={`https://${cid}.ipfs.dweb.link`}>
+              <Image
+                loader={myLoader}
+                src={cid}
+                width={350}
+                height={350}
+                alt="nft"
+              />
+            </a>
+            <div className="p-5">
+              <a
+                target="_blank"
+                href={`https://sepolia.etherscan.io/tx/${transaction}`}
+                className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Transaction
+                <svg
+                  className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
       <Toaster />
     </div>
   );

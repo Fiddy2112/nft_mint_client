@@ -1,13 +1,10 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import { useContext } from "react";
-import { walletContext } from "@/context/WalletProvider";
 import FileUpload from "@/components/FileUpload";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const { connectWallet } = useContext(walletContext);
   return (
     <div>
       <div className="p-2 flex items-center justify-between">
